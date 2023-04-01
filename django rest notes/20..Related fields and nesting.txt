@@ -1,0 +1,114 @@
+....................Nesting serializers...........this is similar with the others on this topic..................
+
+
+
+#####################################################################################
+products
+serializers.py
+
+
+class ProductInlineSerializer(serializers.Serializer):
+    url = serializers.HyperlinkedIdentityField(
+        view_name="product-detail",
+        lookup_field='pk',
+        read_only=True
+        )
+    title = serializers.CharField(read_only=True)
+   
+
+class ProductSerializer(serializers.ModelSerializer):
+    owner = UserPublicSerializer(source = 'user' , read_only=True)
+#.................................................................................................................
+    related_products = ProductInlineSerializer(source='user.product_set.all',read_only=True,many=True)
+#.................................................................................................................   
+    class Meta:
+        model = Product 
+        fields = [
+        'owner',
+        'url',
+        'edit_url',
+        'id',
+        'title',
+        'content',
+        'price',
+        'sale_price',
+        'my_discount',
+#.............................................................................
+        'related_products',
+#.............................................................................
+        ]
+
+output
+##########
+ {
+        "owner": {
+            "username": "christian",
+            "id": 1
+        },
+        "url": "http://127.0.0.1:8000/api/products/5/",
+        "edit_url": "http://127.0.0.1:8000/api/products/5/update/",
+        "id": 5,
+        "title": "New head",
+        "content": "this is very new",
+        "price": "99.99",
+        "sale_price": "79.99",
+        "my_discount": "122",
+        "related_products": [
+            {
+                "url": "http://127.0.0.1:8000/api/products/5/",
+                "title": "New head"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/6/",
+                "title": "School kids"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/7/",
+                "title": "average people are herer"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/11/",
+                "title": "Christian"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/12/",
+                "title": "Christian"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/13/",
+                "title": "Duke"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/14/",
+                "title": "Nnnnn"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/15/",
+                "title": "Auth Item"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/16/",
+                "title": "Jameksdlfha;sdkj"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/17/",
+                "title": "John"
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/products/18/",
+                "title": "john"
+            }
+        ]
+    },
+#####################################################################################
+
+
+
+
+
+
+NB....The only reason why you should use model serializers in when you have 
+	Create
+	update 
+
+

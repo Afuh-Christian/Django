@@ -1,0 +1,38 @@
+.............using method two ... more prefered...................
+
+
+#######################################################################
+api
+serializers.py
+
+from rest_framework import serializers 
+
+class UserPublicSerializer(serializers.Serializer):
+    username = serializers.CharField(read_only=True)
+    id = serializers.IntegerField(read_only=True)
+
+#######################################################################
+products
+serializers.py
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    owner = UserPublicSerializer(source = 'user' , read_only=True)
+   
+    class Meta:
+        model = Product 
+        fields = [
+           
+        'owner',
+       
+        'url',
+        'edit_url',
+        'id',
+        'title',
+        'content',
+        'price',
+        'sale_price',
+        'my_discount',
+       
+        ]
+    

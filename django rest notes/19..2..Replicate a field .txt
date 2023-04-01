@@ -1,0 +1,49 @@
+WE want to make two fields with thesame data
+
+
+class ProductSerializer(serializers.ModelSerializer):
+	.... 
+
+#.............................................................
+    name = serializers.CharField(source = "title", read_only = True)
+#.............................................................
+    class Meta:
+        model = Product 
+        fields = [
+        'url',
+        'edit_url',
+        'id',
+       #.............................................................
+        'name',
+       #.............................................................
+        'title',
+        'content',
+        'price',
+        'sale_price',
+        'my_discount'
+        ]
+You can also user foriegn key relationship inside eg
+email = serializers.CharField(source = 'user.email',read_only=True)
+
+To display an email belonging to a particular instance or that owns a particular instance
+#########################################################################################
+
+Now we have two fields with thesame data
+]
+
+Output..........
+
+     {
+        "url": "http://127.0.0.1:8000/api/products/1/",
+        "edit_url": "http://127.0.0.1:8000/api/products/1/update/",
+        "id": 1,
+	 #................
+        "name": "ok",
+        "title": "ok",
+	 #................
+        "content": "iuadsfuasdf",
+        "price": "667.09",
+        "sale_price": "533.67",
+        "my_discount": "122"
+    },
+    

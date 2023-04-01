@@ -1,0 +1,31 @@
+
+
+
+
+
+View.py
+
+###############################################################################################
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+###############################################################################################
+# @api_view
+# def api_home(request, *args, **kwargs):
+#     model_data = Product.objects.all().order_by("?").first()
+#     data = {} 
+#     if model_data:
+#         data = model_to_dict(model_data,fields = ['id','title'])
+#     return Response(data)
+
+
+#######  Error from above  ########################################################################################
+AssertionError: @api_view missing list of allowed HTTP methods
+###############################################################################################
+
+@api_view(["GET","POST"])
+def api_home(request, *args, **kwargs):
+    model_data = Product.objects.all().order_by("?").first()
+    data = {} 
+    if model_data:
+        data = model_to_dict(model_data,fields = ['id','title'])
+    return Response(data)

@@ -1,0 +1,63 @@
+
+## for getting an item
+
+############################################################################################
+Products.views.py
+
+from rest_framework import generics 
+
+from .models import Product 
+from .serializers import ProductSerializer
+
+## for getting and item
+
+class ProductDetailAPIView(generics.RetrieveAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+    #lookup_field = 'pk' .......for a particular instance
+    #Product.object.get(pk)
+    #def get_qeuryset() 
+
+############################################################################################
+
+Products.urls.py
+
+from django.urls import path 
+
+from .views import ProductDetailAPIView
+
+urlpatterns = [
+    path('<int:pk>/',ProductDetailAPIView.as_view())
+]
+
+
+############################################################################################
+
+cfehome.urls.py 
+
+path('api/products/',include('products.urls'))
+
+############################################################################################
+
+detail.py
+
+import json
+import requests
+
+endpoint = "http://127.0.0.1:8000/api/products/5/" 
+
+output_response = requests.get(endpoint) 
+
+print(output_response.json())
+
+############################################################################################
+
+
+############################################################################################
+
+
+############################################################################################
+
+
+############################################################################################

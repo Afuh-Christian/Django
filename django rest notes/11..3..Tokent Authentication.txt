@@ -1,0 +1,45 @@
+.................Deleting tokens..................................
+
+
+method 1
+
+-Through the admin panel 
+-Deleting the token we created when the user logged in via the client
+
+-note that another token is generated when the user loggs in again
+
+lets see all the operations under the token 
+
+python manage.py shell
+>>> from rest_framework.authtoken.models import *
+>>> locals()
+
+>>>Token
+<class 'rest_framework.authtoken.models.Token'>
+
+>>> Token.objects.all()
+<QuerySet [<Token: 7453e06ddd00fd04562f5d29cc865ce4e3be3aa7>]>
+
+>>> Token.objects.all().first()
+<Token: 7453e06ddd00fd04562f5d29cc865ce4e3be3aa7>
+>>> dir
+<built-in function dir>
+>>> dir(Token.objects.all().first())
+['DoesNotExist', 'MultipleObjectsReturned', '__class__', '__delattr__', '__dict__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', '__getattribute__', '__getstate__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', '__repr__', '__setattr__', '__setstate__', '__sizeof__', '__str__', '__subclasshook__', '__weakref__', '_check_column_name_clashes', '_check_constraints', '_check_default_pk', '_check_field_name_clashes', '_check_fields', '_check_id_field', '_check_index_together', '_check_indexes', '_check_local_fields',
+'_check_long_column_names', '_check_m2m_through_same_relationship', '_check_managers', '_check_model', '_check_model_name_db_lookup_clashes', '_check_ordering', '_check_property_name_related_field_accessor_clashes', '_check_single_primary_key', '_check_swappable', '_check_unique_together', '_do_insert', '_do_update', '_get_FIELD_display', '_get_expr_references', '_get_next_or_previous_by_FIELD', '_get_next_or_previous_in_order', '_get_pk_val', '_get_unique_checks', '_meta', '_perform_date_checks', '_perform_unique_checks', '_prepare_related_fields_for_save', '_save_parents', '_save_table', '_set_pk_val', '_state', 'check', 'clean', 'clean_fields', 'created', 'date_error_message', 'delete', 'from_db', 'full_clean', 'generate_key', 'get_deferred_fields', 'get_next_by_created', 'get_previous_by_created', 'key', 'objects', 'pk', 'prepare_database_save', 'refresh_from_db', 'save', 'save_base', 'serializable_value', 'unique_error_message', 'user', 'user_id', 'validate_unique']
+
+
+lets created a token 
+
+>>>>>> token_obj = Token.objects.first()
+>>> token_obj.created
+datetime.datetime(2022, 3, 3, 17, 13, 21, 868222, tzinfo=datetime.timezone.utc)
+
+
+2....We can set an expiration time for the token so that it deletes as the time expires
+     We can let the user decide
+     There's plenty others in the documentation
+
+3....we can import the Token model and overwride some of it's implementations by 
+   created and expiration time and others (2:57:00)
+

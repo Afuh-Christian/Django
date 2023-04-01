@@ -1,0 +1,213 @@
+
+##################################################################################################
+##################################################################################################
+##################################################################################################
+
+##################################################################################################
+   ........... consumers.py ..............
+
+NB 
+1  AuthMiddlewareStack..........helps you to get the id of the current user in the channels .... this is how you get the current users in channels ... as request.user in normall django
+
+ -Id of loggend in user
+........................................
+ 	 self.scope['user'].id
+........................................
+
+##################################################################################################
+2 ...Id of other users .......this works exclusively with AsyncWebsocketConsumer
+................................................................................
+	self.scope['url_route']['kwargs']['id']
+................................................................................
+
+ 
+  is the route of the current class 
+ URLRouter([
+            path('ws/<int:id>/', PersonalChatConsumer)
+        ])
+...............................................................
+ 'url_route' =  'ws/<int:id>/'  # we use this to get the id of the user 
+.............................................................
+
+
+We have to make sure only two users can chat in one room
+
+
+example.................
+##################################################################################################
+chat.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+      <form action="" method="POST" id="form">
+          {% csrf_token %}
+      
+          <input type="text" name="messages">
+
+            <input type="submit" value="send">
+        </form>
+
+        <div id="dump_message"></div>
+
+
+
+
+    <script>
+//................................................................................
+        let stream = "page"    
+
+        let url = 'ws://'+window.location.host+'/k-socket/'+stream+'/'
+//................................................................................
+
+        const wSocket = new WebSocket(url);
+
+        wSocket.onmessage = function(e){
+            let data_items = JSON.parse(e.data)
+          
+            if(data_items.type == 'chat'){
+                let messages = document.getElementById('dump_message')
+
+                messages.insertAdjacentHTML('beforeend','<div> <p>' +data_items.message+'</p> </div>')
+            }
+        
+        }
+
+
+        let form = document.getElementById('form')
+        form.addEventListener('submit',(e)=>{
+            e.preventDefault()
+            let message = e.target.messages.value 
+            wSocket.send(JSON.stringify({
+                'message': message
+            }))
+            form.reset();
+        })
+
+  </script>
+</body>
+</html>
+
+
+
+##################################################################################################
+
+consumers.py
+
+import json 
+from channels.generic.websocket import AsyncWebsocketConsumer 
+from asgiref.sync import async_to_sync
+
+
+
+class ChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+//.........................And now we set it as a self.room_group_name ...........now we can make it dynamic easily from the chat.html page............................................
+        G =  self.scope['url_route']['kwargs']['stream']
+        self.room_group_name = f'{G}'
+//................................................................................
+        await self.channel_layer.group_add(
+            self.room_group_name,
+            self.channel_name
+        )
+        await self.accept()
+
+
+
+    async def receive(self,text_data): 
+        text_data_json = json.loads(text_data)
+        message = text_data_json['message']
+
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type':'chat_message',
+                'message':message
+            }
+        )
+
+    async def chat_message(self,event):
+        message = event['message']
+
+        await self.send(text_data=json.dumps({
+            'type':'chat',
+           
+            'message':message 
+           
+        }))
+
+    async def disconnect(self, code):
+        self.channel_layer.group_discard(
+            self.room_group_name,
+            self.channel_name
+        )
+
+##################################################################################################
+routers.py
+
+from django.urls import re_path 
+from django.urls import path
+from . import consumers 
+
+websocket_urlpatterns = [
+//................................................................................
+    path('k-socket/<str:stream>/', consumers.ChatConsumer.as_asgi()),
+//................................................................................
+
+//............................stream is of any datatype....................................................
+Or  re_path(r'^k-socket/(?P<stream>\w+)/$', consumers.ChatConsumer.as_asgi())
+//................................................................................
+  
+]
+
+
+##################################################################################################
+       
+
+
+  
+
+
+
+
+
+
+
+
+js...............
+
+
+this is django short form form passing id to js
+
+index.html
+
+{{user_obj.id|json_script:"json-username"}}     //.....other user Id = json-username
+{{request.user.username|json_script:"json-message-username"}}  //.........current user Id = json-message-username
+
+.......................the alternative to this is ..........
+<script id="json-username" type="application/json"></script>
+<script id="json-message-username" type="application/json"></script>
+
+####################################################
+js
+
+const id = JSON.parse(document.getElementById('json-username').textContent); 
+
+const message_username = JSON.parse(document.getElementById('json-message-username').textContent);
+
+
+
+
+##############################
+from channels.db import @database_sync_to_async 
+ @database_sync_to_async..... is a decorator used in django channels when dealing with models 
+
+
+this makes the messages to be saved without reloading the page 
+

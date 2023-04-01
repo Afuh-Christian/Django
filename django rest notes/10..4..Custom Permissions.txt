@@ -1,0 +1,2 @@
+We need to update our defualt and introduct a new type of authentications
+..This is because our client.py does not have access to any of them

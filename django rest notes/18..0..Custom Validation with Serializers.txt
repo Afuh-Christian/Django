@@ -1,0 +1,162 @@
+.................................................1st method.............................3:40:00
+
+This is to ensure that all products are unique
+
+
+............
+
+1...Go into any Serializer
+2...pick the field that we want to validate our data
+3....create a funtion for it ...........................
+	def validate_{field_name}(self,value):
+
+4....value = actuall pass vallue...value being submitted when we use this model serializer...wethere it's the create or update method
+	-It's not for the (read_only)...not for the reading side of things
+	-It's only for when we are actioning to validate the data(clean it up) and make sure it's ok to save 
+
+
+
+serializers.py
+
+
+
+class ProductSerializers(....)
+	.....
+
+#...................................................................................................
+    def validate_title(self, value):
+        #this will check if this title exist in the project somewhere
+        qs = Product.objects.filter(title__iexact=value)
+        if qs.exists():
+            raise serializers.ValidationError(f"{value} is already a product name.")
+        return value
+#...................................................................................................
+
+
+#################################################################################################################################
+results.....You won't be allowed to create a new item it the title name your submitting already exist in the database
+#################################################################################################################################
+NB.....You can also create validators for models...and all other django concepts 
+
+
+#**********************************************************************************************************************************************************************************************
+
+
+.......................................................Method 2.................................
+
+
+
+products.py 
+###############################
+validators.py
+
+from rest_framework import serializers 
+
+from .models import Product 
+
+#..................................NB....there's no self as a parameter here sinces its not found in a class.............................................
+def validate_title(value):            
+    #this will check if this title exist in the project somewhere
+    qs = Product.objects.filter(title__iexact=value)           
+    if qs.exists():
+        raise serializers.ValidationError(f"{value} is already a product name.")
+    return value            
+#......................................................................................................................................................
+
+###############################
+
+from .validators import validate_title
+
+class ProductSerializers(....)
+  ....
+
+#..................................................................
+    title = serializers.CharField(validators=[validate_title])
+#..................................................................
+	
+
+########################################################################################################################
+########################################################################################################################
+########################################################################################################################
+
+
+
+
+Another small example******
+
+seriazizers.py 
+
+class ProductSerialzers(...) 
+
+... 
+
+    def validate_title(self,value): 
+#.......................for a particular user...............................................       
+        request = self.context.get('request') 
+        user = request.user 
+        qs = Product.objects.filter(user=user,title__iexact=value) 
+#......................................................................            
+        if qs.exists():
+            raise serializers.ValidationError(f"{value} is already a product name.")
+        return value 
+
+              
+#################################################################################################################
+
+Now a .................Validator for uniqueness..............................
+
+
+###################
+
+valiadors.py
+
+
+from rest_framework import serializers 
+
+from rest_framework.validators import UniqueValidator
+
+from .models import Product 
+
+#................................................................................................
+def validate_title_no_hello(value):
+    if "hello" in value.lower():
+        raise serializers.ValidationError(f"{value} is already a product name.")
+    return value
+#................................................................................................
+
+#................................................................................................*****I have a pb displaying it's error ....maybe it's not supported on python 3.9.5
+unique_product_title = UniqueValidator(queryset = Product.objects.all(), lookup = 'iexact')
+#................................................................................................
+
+###################
+
+serializers.py
+
+#................................................................................................
+from .validators import validate_title_no_hello,unique_product_title
+#................................................................................................
+
+
+class ProductSerialzers(...) 
+
+... 
+
+#........................................ordering matters........................................................
+ title = serializers.CharField(validators=[unique_product_title,validate_title_no_hello])
+#................................................................................................
+
+
+NB....if you change the CharField to another field that is unsupported .... another error will be displayed requesting for an email
+##################################################################################
+Result....We have two type of validators that will output results
+##################################################################################
+
+
+
+...................Replicate a field ...................
+
+
+
+
+
+

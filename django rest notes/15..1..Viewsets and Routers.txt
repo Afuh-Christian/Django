@@ -1,0 +1,52 @@
+.............Viewsets and Routers.........................
+
+Disadvantages
+
+ -router.url has all the routes in the nutshell
+   you can alter them explicitely as in we normally do with normall classes and function views
+
+  -You can only see the urls by printing the router.urls on the console to see all the urls that are being supported
+
+
+
+..................
+###########################################################################################
+routers.py
+
+
+router =DefaultRouter() 
+router.register("products-abc", ProductGenericViewSet,basename="products")
+
+urlpatterns  =  router.urls
+
+################################...........................................................
+viewsets.py
+
+class ProductGenericViewSet(viewsets.GenericViewSet,
+                            mixins.RetrieveModelMixin,
+                            mixins.ListModelMixin,):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk' #default
+    """
+    GET -> list ->Queryset
+    GET -> retrieve -> Product Instance Detail View
+    """
+
+###########################################################################################
+###########################################################################################
+
+
+
+
+This solves the 1st disadvantage above
+###########################################################################################
+#.................With this method ....You can chose their routes explicitely .....................
+product_list_view = ProductGenericViewSet.as_view({'get':'list'})
+product_detail_view = ProductGenericViewSet.as_view({'get':'retrieve'})
+###############################>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+
+

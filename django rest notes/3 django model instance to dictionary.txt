@@ -1,0 +1,64 @@
+#Converting django models into a dictionary with a simple build in method
+
+
+#########################################################################################
+
+1....views.py 
+
+#.....................................................................................
+		from django.forms.models import model_to_dict
+#.....................................................................................
+	
+	
+	def api_home(request, *args, **kwargs):
+	    model_data = Product.objects.all().order_by("?").first()
+	    data = {} 
+	    if model_data:
+#.....................................................................................
+	        data = model_to_dict(model_data)
+#.....................................................................................
+
+#To restrict the fields you wish to add in .....................................................................................
+	        #data = model_to_dict(model_data, fields = ['id','title'])
+#.....................................................................................
+
+
+	    return JsonResponse(data)
+
+
+
+#################################################################################################################################
+
+client 
+
+import json
+import requests
+
+endpoint = "http://127.0.0.1:8000/api/"
+
+# get_response = requests.get(endpoint) #HTTP Request
+
+
+get_response = requests.get(endpoint,json = {"product_id":123}) #HTTP Request
+
+# print(get_response.text) #Print raw text response
+
+
+#Http Request -> HTML
+# Rest API HTTP Requet -> JSON 
+
+print(get_response.json())
+
+
+######################################################################################################################
+       client console 
+
+first case 
+
+object and all attributes
+
+#........................
+
+second case 
+
+only the id and title

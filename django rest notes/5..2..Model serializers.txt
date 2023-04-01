@@ -1,0 +1,70 @@
+################################################################################################
+serializers.py
+
+from rest_framework import serializers 
+
+from .models import Product 
+
+class ProductSerializer(serializers.ModelSerializer):
+
+# To change the method name in Product get_discount to my discount to be displayed ...................................................................................................
+
+    my_discount = serializers.SerializerMethodField(read_only=True)
+    def get_my_discount(self,obj):
+        return obj.get_discount()
+
+#...................................................................................................
+    class Meta:
+        model = Product 
+        fields = ['title','content','price',
+        'sale_price',
+        'my_discount'
+        ]
+
+
+################################################################################################
+
+Views.py
+
+
+
+@api_view(["GET","POST"])
+def api_home(request, *args, **kwargs):
+    model_data = Product.objects.all().order_by("?").first()
+    data = {} 
+    if model_data:
+        # data = model_to_dict(model_data,fields = ['id','title','price','sale_price'])
+        data = ProductSerializer(model_data).data
+    return Response(data)
+
+
+################################################################################################
+
+
+models.py
+
+
+# Create your models here.
+class Product(models.Model):
+    title = models.CharField(max_length=120) 
+    content = models.TextField(blank=True,null=True) 
+    price = models.DecimalField(max_digits=15,decimal_places=2,default=99.99) 
+
+    @property
+    def sale_price(self):
+        return "%.2f" %(float(self.price) * 0.8 )
+
+# New attribute ...................................................................................................
+    def get_discount(self):
+        return "122"
+#............................................................................
+
+
+
+
+############################################
+We can have multiple serializers if need be .......................
+
+
+
+#####

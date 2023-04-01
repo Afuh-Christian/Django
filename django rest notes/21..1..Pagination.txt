@@ -1,0 +1,9 @@
+
+
+WE Can use the limits and offset found the url to create iterations 
+
+offset....page number
+limit....highest number of products a page can have
+
+
+you can check the documentation to do more alterations

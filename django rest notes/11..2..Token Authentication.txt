@@ -1,0 +1,33 @@
+
+
+1...lets copy and save the token and see what happens
+
+##############################################################################
+  To create a product
+
+  client.py
+
+import json
+
+import requests
+#............current token as the user logged in.........................................................................
+headers = {'Authorization' : 'Bearer 7453e06ddd00fd04562f5d29cc865ce4e3be3aa7'}
+#.....................................................................................
+endpoint = "http://127.0.0.1:8000/api/products/create/" 
+
+data = {
+    "title": "Auth Item ",
+    "content": "This is a new item"
+}
+#.....................................................................................
+output_response = requests.post(endpoint, json=data , headers=headers) 
+#.....................................................................................
+print(output_response.json())
+
+########################################################################################
+when you delete the token 
+-it auto loggs the user out 
+
+
+
+

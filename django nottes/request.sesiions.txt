@@ -1,0 +1,28 @@
+-This works by direction or path in which you taking in  the routing
+-it has nothing to do with the database relationships 
+
+
+In this example , we have a small e-commerce website 
+components
+
+category
+	tools
+		subtools
+
+receipt
+
+we created a route that leaves from a particular receipt created to category 
+now we can add item(tools or sub-tools) based on the path from the particular receipt created 
+
+
+
+http status codes 
+
+1xx   informative...eg server has recieved request
+2xx   successfull...eg request was successfull and browser has recieved the information
+3xx   redirection....eg you have been redirected at the completion of the request requires further action
+4xx   client error...eg file not found , page unavailable 
+5xx   server error....eg where the request appears to be valid but the server could not complete the request
+
+
+

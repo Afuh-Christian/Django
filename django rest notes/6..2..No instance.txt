@@ -1,0 +1,25 @@
+with no instance you can have title and still outputs on console
+
+else error
+
+client.py
+
+
+
+get_response = requests.post(endpoint,json = {'content':'this is very new'}) # this will output an error
+
+
+NB if you set blank=True in the title model ... it will not give an error
+
+
+views.py
+
+
+@api_view(["POST"])
+def api_home(request, *args, **kwargs):
+    serializer = ProductSerializer(data = request.data)
+    if serializer.is_valid(raise_exception=True):#to let the user know youve messed up the code 
+       
+       
+    	return Response(data)
+    return Response({"invalid":"not good data"}, status= 400)#To output the error to the user

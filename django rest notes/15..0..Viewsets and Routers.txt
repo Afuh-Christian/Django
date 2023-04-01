@@ -1,0 +1,71 @@
+
+....................................................ROUTERS....................................................................................
+
+
+products
+
+viewsets.py..............................we typicaly put viewsets in views.py....but for now view.py is already full
+
+from rest_framework import viewsets
+
+from .models import Product 
+
+
+
+from .serializers import ProductSerializer 
+
+
+class ProductViewSet(viewsets.ModelViewSet):
+	"""
+    http methods -> functions that are called
+    GET -> list ->Queryset
+    GET -> retrieve -> Product Instance Detail View
+    POST -> create -> New Instance 
+    PUT  -> Update
+    PATCH -> Partial Update 
+    DELETE -> Destroy 
+    """
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk' #default
+
+    
+You can use check definition to see all of this 
+##############################################################################################################
+
+cfehome
+
+
+routers.py
+
+from rest_framework.routers import DefaultRouter 
+
+from products.viewsets import ProductViewSet 
+
+router =DefaultRouter() 
+router.register("products-abc", ProductViewSet,basename="products")
+
+urlpatterns  = [
+ path('', include("router.urls"))  ]
+
+NB ....router.urls show the different urls that comes through them..........create,product list,update etc....all what we difined
+##############################################################################################################
+
+settings.py
+
+    path('api/v2/', include("cfehome.routers"))
+
+#############################
+http://127.0.0.1:8000/api/v2/
+
+result
+
+{
+  "products-abc": "http://127.0.0.1:8000/api/v2/products-abc/"
+} 
+
+######################
+click the link and it takes you to the products view page
+
+
+..............................................................................................................................................................................................

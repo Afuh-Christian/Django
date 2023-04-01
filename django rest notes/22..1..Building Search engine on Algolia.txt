@@ -1,0 +1,13 @@
+4:50:00
+
+-Orderring of the data
+-older entry first
+
+
+We use algolia
+ -Robust search
+ -teach us to intergrate api services
+
+1.....Algolia.com
+-create new account
+-

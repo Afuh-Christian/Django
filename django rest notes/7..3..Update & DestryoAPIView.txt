@@ -1,0 +1,84 @@
+
+
+Update ....rememder it's a put method
+########################################$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+########################################
+
+urls.py
+
+ path('<int:pk>/update/',product_update_view)
+
+########################################
+views.py
+
+
+class ProductUpdateAPIView(generics.UpdateAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_update(self, serializer):
+        instance = serializer.save()
+        if not instance.content:
+            instance.content = instance.title
+            ##
+
+product_update_view = ProductUpdateAPIView.as_view()
+
+########################################
+
+client.py
+
+import json
+import requests
+x = 1
+endpoint = f"http://127.0.0.1:8000/api/products/{x}/update/" 
+
+data = {
+    "title": "Hello bitches hahahaha and you too",
+    "price":123.99
+   
+}
+
+output_response = requests.put(endpoint, json=data) 
+
+print(output_response.json())
+########################################
+
+
+A more organised way by getting id from user
+
+import json
+import requests
+
+#.............................................................................................
+product_id = input("Which product do you wish to update: ")
+
+try:
+    x = int(product_id)
+except:
+    x = None
+    print(f"{x} not a valid id")
+
+if x:
+#.............................................................................................
+    endpoint = f"http://127.0.0.1:8000/api/products/{x}/update/" 
+
+    data = {
+        "title": "This has been removed again",
+        "price":12.00
+    
+    }
+
+    output_response = requests.put(endpoint, json=data) 
+
+    print(output_response.json())
+
+
+
+
+
+
+delete
+########################################$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+########################################

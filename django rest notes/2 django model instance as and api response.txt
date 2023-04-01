@@ -1,0 +1,78 @@
+#Converting a django model into a dictionary before passing it as json data 
+#the old fashion way
+
+
+1..create new app in project
+	python manage.py startapp products
+
+###############################################################################################################################################
+
+2 ... create a model
+
+	class Product(models.Model):
+	    title = models.CharField(max_length=120) 
+	    content = models.TextField(blank=True,null=True) 
+	    price = models.DecimalField(max_digits=15,decimal_places=2,default=99.99) 
+
+###############################################################################################################################################
+
+
+3... migrate
+
+###############################################################################################################################################
+
+
+4... python manage.py shell ....creating objects ....alternative to using the admin
+
+	>>>from products.models import Product
+	>>>Product.objects.create(title="Hello World",content="this is amazing",price=12.00)
+
+	<<>Product.objects.all().order_by("?").first()
+
+###############################################################################################################################################
+
+5......views.py
+
+	import json
+	from django.http import JsonResponse 
+	from products.models import Product
+
+
+	def api_home(request, *args, **kwargs):
+	    model_data = Product.objects.all().order_by("?").first()
+	    data = {} 
+	    if model_data:
+		data['id'] = model_data.id
+	        data['title'] = model_data.title 
+	        data['content'] = model_data.content
+	        data['price'] = model_data.price
+#..............................................................................................
+		#here we are trying to convert the class instance into a dictionary
+		#this is easily done with serializers
+#..............................................................................................
+	    return JsonResponse(data)
+
+###############################################################################################################################################
+
+
+6.....On the client side ...run and debug
+
+	import json
+	import requests
+
+	endpoint = "http://127.0.0.1:8000/api/"
+
+
+	get_response = requests.get(endpoint,json = {"product_id":123}) #HTTP Request
+
+
+	print(get_response.json())
+
+
+
+	###Running the code multiple times lets you see the different items in the database of the django project due to the .order_by("?").first() attarched to the Product instance
+	###
+
+###############################################################################################################################################
+
+	    

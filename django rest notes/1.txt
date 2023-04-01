@@ -1,0 +1,63 @@
+views.py
+
+
+import json
+from django.http import JsonResponse 
+
+
+def api_home(request, *args, **kwargs):
+    
+    print(request.GET)
+    print(request.POST)
+    body = request.body # byte string of json data
+    data = {} 
+    try:
+        data = json.loads(body)
+    except:
+        pass
+    print(data)
+
+    data['params'] = dict(request.GET)
+    data['headers'] = dict(request.headers)  
+    # data['context_type'] = request.context_type
+    return JsonResponse(data)
+
+# print("hey")	
+
+###############################################################################################
+urls.py 
+
+
+from django.urls import path 
+
+from .views import api_home 
+
+urlpatterns = [
+    path('',api_home),
+]
+
+
+
+###############################################################################################
+py_clients
+
+
+import json
+import requests
+
+endpoint = "http://127.0.0.1:8000/api/"
+
+# get_response = requests.get(endpoint) #HTTP Request
+
+
+get_response = requests.get(endpoint,params={"abc":123},json = {"query":"Hello World"}) #HTTP Request
+
+# print(get_response.text) #Print raw text response
+
+
+#Http Request -> HTML
+# Rest API HTTP Requet -> JSON 
+
+print(get_response.json())
+
+

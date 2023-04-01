@@ -1,0 +1,75 @@
+
+
+Right way
+#######################################################################################
+
+urls.py...............name the url your wish to use below
+
+
+
+
+#..............................................................................
+    path('<int:pk>/',product_detail_view,name="product-detail"),
+#..............................................................................
+    path('create/',product_list_create_view),
+    path('',product_list_view,name="product-list") 
+  
+]
+
+serializers.py
+
+
+
+
+from rest_framework import serializers 
+ #.........................................................
+from rest_framework.reverse import reverse
+ #.........................................................
+
+
+from .models import Product 
+
+class ProductSerializer(serializers.ModelSerializer):
+    my_discount = serializers.SerializerMethodField(read_only=True)
+     #.........................................................
+    url = serializers.SerializerMethodField(read_only=True)
+     #.........................................................
+
+
+    class Meta:
+        model = Product 
+        fields = [
+        #.........................................................
+            'url',
+        #.........................................................
+        'id','title','content','price',
+        'sale_price',
+        # 'get_discount',
+        'my_discount'
+        ]
+
+    def get_url(self,obj):
+
+        ##### sometimes serializers don't have the request....that depends on the context that you give it , that's why its not a self.request................................
+    #...................................................................................
+        request = self.context.get('request')
+        if request is None:
+            return None
+        return reverse("product-detail",kwargs={"pk":obj.pk}, request=request) 
+      #...................................................................................
+
+    def get_my_discount(self,obj):
+        try:
+            return obj.get_discount()
+        except:
+            return None
+
+############################
+Now it's a real link that you can now click to go to  a particular page
+
+In this case , it takes you to the detail page of a particul product based of on id,url name, as above
+
+
+
+############
+with this , you can make urls for update , delete and any other route using the technique above

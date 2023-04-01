@@ -1,0 +1,8 @@
+A way to limit the number of request given a time period
+ 
+
+E.g One user can only do a thousand request in a day 
+
+
+
+

@@ -1,0 +1,47 @@
+
+
+Destroy
+################################################################################
+views.py 
+
+
+class ProductDestroyAPIView(generics.DestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    lookup_field = 'pk'
+
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+
+
+product_destroy_view = ProductDestroyAPIView.as_view()
+################################################################################
+urls.py
+
+ path('<int:pk>/delete/',product_destroy_view),
+
+################################################################################
+clients.py
+
+
+import json
+import requests
+
+product_id = input("Which product do you wish to delete: ")
+try:
+    x = int(product_id)
+except:
+    x = None
+    print(f"{x} not a valid id")
+
+if x:
+    endpoint = f"http://127.0.0.1:8000/api/products/{x}/delete/" 
+
+    output_response = requests.delete(endpoint) 
+
+    
+    print(output_response.status_code, output_response.status_code==204)
+
+################################################################################
+
+

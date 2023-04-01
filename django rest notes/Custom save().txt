@@ -1,0 +1,87 @@
+######################################In Model############################################
+
+....To have things run automatically when you save your method
+
+Using the admin panel
+
+class Number(models.Model):
+    a = models.IntegerField()
+    b = models.IntegerField()
+    c = models.IntegerField(blank=True)
+     
+    
+    def multiply(self):
+        self.c = self.a * self.b
+   #............................................................................
+    def save(self,*args,**kwargs):
+        
+        self.multiply()
+        super().save(*args,**kwargs)
+#............................................................................
+
+
+
+pip install requests
+
+######################################In ModelForms############################################
+
+.......To overwride save in modelForm.............
+You first set commit to false on the super().save(commit=False) to prevent it from being save 
+Write commit=True in your new method def save(commit=True) .....and call the object of the super( ToolForm,self).save() 
+m.save()
+m is the object .....m = super(ToolForm,self).save(commit=False,*args,**kwargs)
+
+
+class ToolForm(ModelForm):
+    class Meta:
+        model = Tools
+        fields = ['name','amount','price1','price2','price3','price4','amount_alter']#,'category'
+
+    # def add_amount(self):
+        
+      
+
+#............................................................................
+    def save_altered(self,commit=True,*args,**kwargs):
+        m = super(ToolForm,self).save(commit=False,*args,**kwargs)
+        m.amount = m.amount + m.amount_alter   #in self.cleaned_data['multi_choice']
+        m.amount_alter = 0
+        if commit:
+#...this save() method if from the model in the database......................
+            m.save()
+#...........................................................................
+        return m
+
+
+#............................................................................
+
+
+
+creating a function separately to handle the logic
+
+
+
+
+
+  #.............................
+    def add_amount(self,obj):
+        obj.amount = obj.amount + obj.amount_alter  
+        obj.amount_alter = 0  
+   #.............................
+
+    def save_altered(self,commit=True,*args,**kwargs):
+        m = super(ToolForm,self).save(commit=False,*args,**kwargs)
+#.............................
+        self.add_amount(m)
+#.............................
+        
+        if commit:
+#...this save() method if from the model in the database......................
+            m.save()
+#............................................................................
+        return m
+
+
+NB.......
+-save_altered() is the overritten save() of the ModelForm 
+-save() in m.save() is from the Models......You can also change it's name by overriding it from the models.py 

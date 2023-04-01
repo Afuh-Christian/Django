@@ -1,0 +1,156 @@
+-run python manage.py test 
+-this declares that all the pattern that we declared in the project works
+-if it does not work , we need to address it proir to going to the next step
+
+NB ... WE will also talk about Test Driven Development.....different from what we are doing now 
+
+########################################################################################
+creating your first test case 
+Nb..if you don't have a test.py , you can create one ,but it should start with test_...
+
+1..test.py
+
+
+class UserTestCast(TestCase):
+     
+     def setUp()  ...this is in camel case because of python build in unit test 
+ .....this is where we will create any sort of database entries .......
+.....by defualt , django does not have a database set up for our test.....
+......but django will create one for you based off of on your credentials.....
+
+
+
+
+########################################################################################
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
+..so it makes a new database when a test is run and then it destroys it ....
+
+
+
+########################################################################################
+We get the an example from the build in user class from django used in the project 
+
+
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+
+# Create your tests here.
+
+class UserTestCast(TestCase):
+     
+     def setUp(self):
+         
+
+
+
+
+########################################################################################
+
+You can run test by .... python manage.py test 
+
+Your can add the name of the App(project you wish to test )
+
+########################################################################################
+from django.test import TestCase 
+
+
+# Create your tests here.
+
+
+from django.contrib.auth import get_user_model
+# Create your tests here.
+User = get_user_model
+class UserTestCast(TestCase):
+     
+     def setUp(self):
+        user_a = User(username="cfe")
+        user_a = set_password("some_123_password")
+        user_a.save()
+        print(user_a.id)
+
+
+Your get 0 test when you run python manang.py test
+
+########################################################################################
+
+from django.test import TestCase 
+
+
+# Create your tests here.
+
+
+from django.contrib.auth import get_user_model
+# Create your tests here.
+User = get_user_model
+class UserTestCast(TestCase):
+     
+     def setUp(self):
+        user_a = User(username="cfe")
+        user_a = set_password("some_123_password")
+        user_a.save()
+        print(user_a.id)
+
+    def test_user_exist(self): #.....the naming convention for this is test_...
+        user_count = User.objects.all().count() 
+        print(user_count)
+        self.assertEqual(user_count, 1)  #assertEqual is build in to the TestCase and it's like assert user_count = 1
+        self.assertNotEqual(user_count, 0)
+
+Now you run python manage.py test
+
+you get
+
+1
+1
+
+NB.... so setUp(self) created what i needed from the database 
+  .....In test_user_exist(self) we were able to reference what was created during the test session
+
+########################################################################################
+
+########################################################################################
+
+########################################################################################
+from django.test import TestCase 
+# Create your tests here.
+
+from .models import Category
+from django.contrib.auth import get_user_model
+
+User = get_user_model
+
+class UserTestCast(TestCase):
+    def setUp(self):
+        c = Category.objects.create(name="House")
+        c.save()
+        print(c.id)
+        
+
+    def test_user_exist(self):
+        user_count = Category.objects.all().count() 
+        print(user_count)
+        self.assertEqual(user_count, 2)  #assertEqual is build in to the TestCase and it's like assert user_count = 1
+        self.assertNotEqual(user_count, 0)
+
+
+########################################################################################
+self.assertEqual(user_count, 1) 
+self.assertNotEqual(user_count, 0)
+
+the truthfullness of these two statements are being evaluated
+
+########################################################################################
+
+########################################################################################
+
+########################################################################################
+
+########################################################################################
+
+########################################################################################

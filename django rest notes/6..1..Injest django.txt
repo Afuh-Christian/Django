@@ -1,0 +1,66 @@
+POST..... to send it to django and validate it is the serializers 
+	and save if too
+
+
+#############################################################################################
+
+class ProductSerializer(serializers.ModelSerializer):
+    my_discount = serializers.SerializerMethodField(read_only=True)
+
+
+    class Meta:
+        model = Product 
+        fields = ['id','title','content','price',
+        'sale_price',
+        # 'get_discount',
+        'my_discount'
+        ]
+
+# To give it defualt value.......................................................................
+    def get_my_discount(self,obj):
+        try:
+            return obj.get_discount()
+        except:
+            return None
+#............................................................................................
+
+#############################################################################################
+client.py
+
+import json
+import requests
+
+endpoint = "http://127.0.0.1:8000/api/"
+
+
+
+get_response = requests.post(endpoint,json = {"title":"New head",'content':'this is very new'}) #HTTP Request
+
+
+
+print(get_response.json())
+
+
+
+#############################################################################################
+
+View.py
+
+@api_view(["POST"])
+def api_home(request, *args, **kwargs):
+    serializer = ProductSerializer(data = request.data)
+    if serializer.is_valid():
+        data = serializer.save()
+        data = serializer.data
+        print(data)
+    	return Response(data)
+
+
+#############################################################################################
+
+console of backend site
+
+{'id': 5, 'title': 'New head', 'content': 'this is very new', 'price': '99.99',
+ 'sale_price': '79.99', 'my_discount': '122'}
+
+this data has been saved to the data base
